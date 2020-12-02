@@ -9,22 +9,35 @@ import * as SockJS from 'sockjs-client';
 })
 export class ChatComponent implements OnInit {
   private client: Client;
+  conectado: boolean = false;
 
   constructor() {}
 
   ngOnInit(): void {
     this.client = new Client();
     this.client.webSocketFactory = () => {
-      return new SockJS("http://localhost:8080/chat-websocket");
-    }
+      return new SockJS('http://localhost:8080/chat-websocket');
+    };
 
     this.client.onConnect = (frame) => {
       // frame object contains all the information of the connection with the broker.
-      console.log('Conectados: ' + this.client.connected + ' : ' + frame );
-    }
+      console.log('Conectados: ' + this.client.connected + ' : ' + frame);
+      this.conectado = true;
+    };
 
+    this.client.onDisconnect = (frame) => {
+      console.log('Desconectados: ' + !this.client.connected + ' : ' + frame);
+      this.conectado = false;
+    };
+
+  }
+
+  conectar(): void {
     // Starts the connection
     this.client.activate();
+  }
 
+  desconectar(): void {
+    this.client.deactivate();
   }
 }
