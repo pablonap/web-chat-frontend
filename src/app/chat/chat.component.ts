@@ -34,6 +34,9 @@ export class ChatComponent implements OnInit {
       this.client.subscribe('/chat/mensaje', e => {
         // This is a message written by someone which in turn was received by the broker and then sent to the clients.
         let mensaje: Mensaje = JSON.parse(e.body) as Mensaje;
+
+        mensaje.fecha = new Date(mensaje.fecha);
+
         this.mensajes.push(mensaje);
         console.log(mensaje);
       })
